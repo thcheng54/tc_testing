@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Duty Roster • Live HK Time & Weather</title>
+  <title>Duty Roster • Jan 2026 • Live HK Time & Weather</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -47,7 +47,7 @@
     }
 
     h1 {
-      font-size: 2.2rem;
+      font-size: 2.3rem;
       margin-bottom: 12px;
       color: var(--accent);
     }
@@ -96,8 +96,8 @@
     }
 
     @media (max-width: 640px) {
-      h1          { font-size: 1.8rem; }
-      #live-time  { font-size: 1.6rem; }
+      h1          { font-size: 1.9rem; }
+      #live-time  { font-size: 1.65rem; }
       .weather-line { font-size: 1.1rem; }
     }
   </style>
@@ -107,8 +107,8 @@
 <div class="container">
 
   <header>
-    <h1>Duty Roster</h1>
-    <div id="live-time">Loading time...</div>
+    <h1>January 2026 Duty Roster</h1>
+    <div id="live-time">Loading Hong Kong time...</div>
     <div class="weather-line">
       Hong Kong now: 
       <strong id="temp">--</strong> °C • 
@@ -117,17 +117,14 @@
   </header>
 
   <div class="roster-card">
-    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-         REPLACE THIS src WITH YOUR OWN IMAGE URL
-    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-    <img src="https://images.unsplash.com/photo-1557683316-973673baf926?w=1200"
-         alt="Duty Roster">
+    <img src="image/202601roster.jpeg"
+         alt="Duty Roster – January 2026">
   </div>
 
 </div>
 
 <footer>
-  Hong Kong Time (HKT) • Live update
+  Hong Kong Time (HKT) • Live • January 2026
 </footer>
 
 <script>
@@ -153,7 +150,7 @@ setInterval(updateClock, 1000);
 updateClock();
 
 // ────────────────────────────────
-//   WEATHER – Open-Meteo (no key)
+//   WEATHER – Open-Meteo (no API key)
 // ────────────────────────────────
 async function fetchWeather() {
   try {
@@ -177,12 +174,11 @@ async function fetchWeather() {
     document.getElementById('condition').textContent = condition;
   } catch (err) {
     document.getElementById('condition').textContent = '—';
-    console.error('Weather fetch failed', err);
   }
 }
 
 fetchWeather();
-setInterval(fetchWeather, 1000 * 60 * 12); // refresh ~every 12 min
+setInterval(fetchWeather, 1000 * 60 * 10); // refresh every 10 min
 
 </script>
 
