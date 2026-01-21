@@ -11,6 +11,7 @@
       --accent: #38bdf8;
       --green: #22c55e;
       --yellow: #eab308;
+      --orange: #f97316;
       --red: #ef4444;
       --muted: #94a3b8;
       --onsite: #06b6d4;
@@ -83,8 +84,14 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 1.5rem;
-      max-width: 700px;
+      gap: 1.8rem 1.2rem;
+      max-width: 800px;
+    }
+    .staff-member {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100px;
     }
     .staff-icon {
       width: 80px;
@@ -99,13 +106,27 @@
     }
     .staff-icon.active {
       filter: grayscale(0%) opacity(1);
-      border: 4px solid var(--green);
       box-shadow: 0 8px 25px rgba(34,197,94,0.5);
-      transform: scale(1.12);
+      transform: scale(1.08);
     }
     .staff-icon:hover {
       transform: scale(1.15);
     }
+    .staff-status {
+      margin-top: 0.6rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.35rem 0.8rem;
+      border-radius: 12px;
+      background: rgba(0,0,0,0.4);
+      min-width: 80px;
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
+    .status-on-duty  { background: var(--green);  color: #000; }
+    .status-onsite   { background: var(--yellow); color: #000; }
+    .status-off      { background: var(--red);    color: #fff; }
+    .status-break    { background: var(--orange); color: #fff; }
 
     .details {
       font-size: 1.8rem;
@@ -124,11 +145,13 @@
       .clock { font-size: 5.2rem; letter-spacing: 4px; }
       .status { font-size: 3.4rem; min-width: 90%; padding: 1.2rem 2rem; }
       .staff-icon { width: 70px; height: 70px; }
+      .staff-status { font-size: 0.85rem; padding: 0.3rem 0.7rem; }
     }
     @media (max-width: 480px) {
       .clock { font-size: 4rem; }
       .status { font-size: 2.8rem; padding: 1rem 1.5rem; }
-      .staff-icon { width: 60px; height: 60px; }
+      .staff-icon { width: 65px; height: 65px; }
+      .staff-member { width: 90px; }
     }
   </style>
 </head>
@@ -138,23 +161,18 @@
   <div class="clock" id="live-clock">00:00:00</div>
   <div class="status" id="status-display">Checking...</div>
 
-  <!-- Staff avatars -->
-  <div class="staff-container" id="staff-container">
-    <!-- Icons will be inserted by JS -->
-  </div>
+  <!-- Staff avatars + status -->
+  <div class="staff-container" id="staff-container"></div>
 </div>
 
-<footer>Hong Kong Time (HKT) • Live Update • Click status when ON DUTY to toggle ONSITE • Click avatars to mark staff on/off duty</footer>
+<footer>Hong Kong Time (HKT) • Live Update • Click big status when ON DUTY to toggle ONSITE • Click avatars to cycle: On duty → Onsite → Off → Break</footer>
 
 <script>
-// Live HK clock + duty status + staff toggle logic
+// Live HK clock + main status logic (unchanged)
 let manualMode = false;
 let manualStatus = '';
 
-const staffCount = 7;
-const staffStates = new Array(staffCount).fill(false); // false = off duty, true = on duty
-
-function updateDisplay() {
+function updateMainDisplay() {
   const now = new Date();
   const hkTime = now.toLocaleString('en-US', {
     timeZone: 'Asia/Hong_Kong',
@@ -167,11 +185,9 @@ function updateDisplay() {
   const hour = hh;
   const minute = mm;
 
-  // Clock
   const timeStr = `${String(hour).padStart(2,'0')}:${String(minute).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
   document.getElementById('live-clock').textContent = timeStr;
 
-  // Main status logic
   const statusEl = document.getElementById('status-display');
   const timeInMinutes = hour * 60 + minute;
 
@@ -203,9 +219,8 @@ function updateDisplay() {
   statusEl.textContent = statusText;
   statusEl.className = 'status ' + statusClass;
 
-  // Clickable only during on-duty periods
   if (statusClass === 'on-duty' || statusClass === 'onsite') {
-    statusEl.onclick = toggleOnsite;
+    statusEl.onclick = toggleMainOnsite;
     statusEl.style.cursor = 'pointer';
   } else {
     statusEl.onclick = null;
@@ -213,47 +228,69 @@ function updateDisplay() {
   }
 }
 
-function toggleOnsite() {
+function toggleMainOnsite() {
   const statusEl = document.getElementById('status-display');
   manualMode = true;
-
-  if (statusEl.textContent === 'ON DUTY') {
-    manualStatus = 'ONSITE';
-  } else {
-    manualStatus = 'ON DUTY';
-  }
-  updateDisplay();
+  manualStatus = statusEl.textContent === 'ON DUTY' ? 'ONSITE' : 'ON DUTY';
+  updateMainDisplay();
 }
 
-// Staff icons setup
+// Staff logic
+const staffCount = 7;
+const staffStates = new Array(staffCount).fill(0); // 0: On duty, 1: Onsite, 2: Off, 3: Break
+
+const statusCycle = [
+  { text: 'On duty',  class: 'status-on-duty',  active: true  },
+  { text: 'Onsite',   class: 'status-onsite',   active: true  },
+  { text: 'Off',      class: 'status-off',      active: false },
+  { text: 'Break',    class: 'status-break',    active: true  }
+];
+
 function initStaffIcons() {
   const container = document.getElementById('staff-container');
   container.innerHTML = '';
 
   for (let i = 0; i < staffCount; i++) {
+    const member = document.createElement('div');
+    member.className = 'staff-member';
+
     const img = document.createElement('img');
-    img.src = `${String(i+1).padStart(3, '0')}.png`;  // 001.png, 002.png, ..., 007.png
+    img.src = `${String(i+1).padStart(3, '0')}.png`;
     img.alt = `Staff ${i+1}`;
     img.className = 'staff-icon';
     img.dataset.index = i;
 
-    // Restore saved state (if you want persistence → use localStorage later)
-    if (staffStates[i]) {
+    const statusText = document.createElement('div');
+    statusText.className = 'staff-status';
+    statusText.textContent = statusCycle[staffStates[i]].text;
+    statusText.classList.add(statusCycle[staffStates[i]].class);
+
+    // Initial active state
+    if (statusCycle[staffStates[i]].active) {
       img.classList.add('active');
     }
 
-    img.onclick = () => {
-      staffStates[i] = !staffStates[i];
-      img.classList.toggle('active', staffStates[i]);
+    member.appendChild(img);
+    member.appendChild(statusText);
+
+    member.onclick = () => {
+      const idx = parseInt(img.dataset.index);
+      staffStates[idx] = (staffStates[idx] + 1) % 4;
+
+      const state = statusCycle[staffStates[idx]];
+      statusText.textContent = state.text;
+      statusText.className = 'staff-status ' + state.class;
+
+      img.classList.toggle('active', state.active);
     };
 
-    container.appendChild(img);
+    container.appendChild(member);
   }
 }
 
-setInterval(updateDisplay, 1000);
-updateDisplay();
-initStaffIcons();  // create staff avatars on load
+setInterval(updateMainDisplay, 1000);
+updateMainDisplay();
+initStaffIcons();
 </script>
 </body>
 </html>
