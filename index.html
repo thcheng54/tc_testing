@@ -13,7 +13,7 @@
       --yellow: #eab308;
       --red: #ef4444;
       --muted: #94a3b8;
-      --onsite: #06b6d4;   /* teal-ish for ONSITE */
+      --onsite: #06b6d4;
     }
     * {
       margin: 0;
@@ -61,7 +61,6 @@
       min-width: 600px;
       box-shadow: 0 12px 40px rgba(0,0,0,0.6);
       line-height: 1.2;
-      cursor: default;
       user-select: none;
     }
     .on-duty, .onsite {
@@ -77,6 +76,37 @@
     .onsite   { background: var(--onsite); }
     .lunch    { background: var(--yellow); color: #000; }
     .off-duty { background: var(--red);    color: #fff; }
+
+    /* Staff icons section */
+    .staff-container {
+      margin: 2.5rem 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.5rem;
+      max-width: 700px;
+    }
+    .staff-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid transparent;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      filter: grayscale(100%) opacity(0.5);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+    .staff-icon.active {
+      filter: grayscale(0%) opacity(1);
+      border: 4px solid var(--green);
+      box-shadow: 0 8px 25px rgba(34,197,94,0.5);
+      transform: scale(1.12);
+    }
+    .staff-icon:hover {
+      transform: scale(1.15);
+    }
+
     .details {
       font-size: 1.8rem;
       color: var(--muted);
@@ -93,11 +123,12 @@
       h1 { font-size: 2.6rem; }
       .clock { font-size: 5.2rem; letter-spacing: 4px; }
       .status { font-size: 3.4rem; min-width: 90%; padding: 1.2rem 2rem; }
-      .details { font-size: 1.5rem; }
+      .staff-icon { width: 70px; height: 70px; }
     }
     @media (max-width: 480px) {
       .clock { font-size: 4rem; }
       .status { font-size: 2.8rem; padding: 1rem 1.5rem; }
+      .staff-icon { width: 60px; height: 60px; }
     }
   </style>
 </head>
@@ -106,13 +137,22 @@
   <h1>Duty Status – Hong Kong</h1>
   <div class="clock" id="live-clock">00:00:00</div>
   <div class="status" id="status-display">Checking...</div>
+
+  <!-- Staff avatars -->
+  <div class="staff-container" id="staff-container">
+    <!-- Icons will be inserted by JS -->
+  </div>
 </div>
-<footer>Hong Kong Time (HKT) • Live Update • Click ON DUTY to toggle ONSITE</footer>
+
+<footer>Hong Kong Time (HKT) • Live Update • Click status when ON DUTY to toggle ONSITE • Click avatars to mark staff on/off duty</footer>
 
 <script>
-// Live HK clock + duty status logic with toggle
+// Live HK clock + duty status + staff toggle logic
 let manualMode = false;
 let manualStatus = '';
+
+const staffCount = 7;
+const staffStates = new Array(staffCount).fill(false); // false = off duty, true = on duty
 
 function updateDisplay() {
   const now = new Date();
@@ -127,17 +167,17 @@ function updateDisplay() {
   const hour = hh;
   const minute = mm;
 
-  // Clock display
+  // Clock
   const timeStr = `${String(hour).padStart(2,'0')}:${String(minute).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
   document.getElementById('live-clock').textContent = timeStr;
 
+  // Main status logic
   const statusEl = document.getElementById('status-display');
   const timeInMinutes = hour * 60 + minute;
 
   let statusText = '';
   let statusClass = '';
 
-  // Determine base status
   if (timeInMinutes >= 9*60 && timeInMinutes <= 12*60 + 29) {
     statusText = 'ON DUTY';
     statusClass = 'on-duty';
@@ -155,17 +195,15 @@ function updateDisplay() {
     statusClass = 'off-duty';
   }
 
-  // If in manual mode and it's still an ON-DUTY period → respect manual toggle
-  if (manualMode && (statusClass === 'on-duty')) {
+  if (manualMode && statusClass === 'on-duty') {
     statusText = manualStatus;
     statusClass = manualStatus === 'ON DUTY' ? 'on-duty' : 'onsite';
   }
 
-  // Apply
   statusEl.textContent = statusText;
   statusEl.className = 'status ' + statusClass;
 
-  // Only enable click if it's ON DUTY or ONSITE
+  // Clickable only during on-duty periods
   if (statusClass === 'on-duty' || statusClass === 'onsite') {
     statusEl.onclick = toggleOnsite;
     statusEl.style.cursor = 'pointer';
@@ -184,13 +222,38 @@ function toggleOnsite() {
   } else {
     manualStatus = 'ON DUTY';
   }
-
-  // Immediate visual update
   updateDisplay();
 }
 
+// Staff icons setup
+function initStaffIcons() {
+  const container = document.getElementById('staff-container');
+  container.innerHTML = '';
+
+  for (let i = 0; i < staffCount; i++) {
+    const img = document.createElement('img');
+    img.src = `${String(i+1).padStart(3, '0')}.png`;  // 001.png, 002.png, ..., 007.png
+    img.alt = `Staff ${i+1}`;
+    img.className = 'staff-icon';
+    img.dataset.index = i;
+
+    // Restore saved state (if you want persistence → use localStorage later)
+    if (staffStates[i]) {
+      img.classList.add('active');
+    }
+
+    img.onclick = () => {
+      staffStates[i] = !staffStates[i];
+      img.classList.toggle('active', staffStates[i]);
+    };
+
+    container.appendChild(img);
+  }
+}
+
 setInterval(updateDisplay, 1000);
-updateDisplay(); // run immediately
+updateDisplay();
+initStaffIcons();  // create staff avatars on load
 </script>
 </body>
 </html>
