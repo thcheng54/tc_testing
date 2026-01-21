@@ -37,29 +37,23 @@
       max-width: 1200px;
       width: 100%;
     }
-    h1 {
-      font-size: 3.8rem;
-      color: var(--accent);
-      margin-bottom: 1.8rem;
-      letter-spacing: 1.2px;
-    }
     .clock {
-      font-size: 8.5rem;
+      font-size: 9rem;
       font-weight: 700;
       letter-spacing: 8px;
       color: var(--text);
-      margin: 1.2rem 0 3rem;
+      margin: 1rem 0 3rem;
       font-variant-numeric: tabular-nums;
       text-shadow: 0 8px 30px rgba(0,0,0,0.7);
     }
     .status {
-      font-size: 5.2rem;
+      font-size: 5.5rem;
       font-weight: 800;
-      padding: 1.8rem 4rem;
-      border-radius: 28px;
+      padding: 1.8rem 4.5rem;
+      border-radius: 30px;
       display: inline-block;
-      margin: 2rem 0;
-      min-width: 700px;
+      margin: 2rem 0 3rem;
+      min-width: 750px;
       box-shadow: 0 14px 50px rgba(0,0,0,0.6);
       line-height: 1.2;
       user-select: none;
@@ -78,20 +72,20 @@
     .lunch    { background: var(--yellow); color: #000; }
     .off-duty { background: var(--red);    color: #fff; }
 
-    /* Staff section – EVEN BIGGER (50% more than last version) */
+    /* Staff section */
     .staff-container {
       margin: 4rem 0;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 2.5rem 2.2rem;
+      gap: 2.8rem 2.4rem;
       max-width: 1200px;
     }
     .staff-member {
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 200px;
+      width: 220px;
     }
     .staff-icon {
       width: 180px;
@@ -113,52 +107,33 @@
       transform: scale(1.14);
     }
     .staff-status {
-      margin-top: 1.2rem;
-      font-size: 1.3rem;
+      margin-top: 1.3rem;
+      font-size: 1.35rem;
       font-weight: 700;
-      padding: 0.7rem 1.3rem;
-      border-radius: 16px;
+      padding: 0.8rem 1.4rem;
+      border-radius: 18px;
       background: rgba(0,0,0,0.5);
-      min-width: 140px;
+      min-width: 150px;
       text-align: center;
-      letter-spacing: 0.7px;
+      letter-spacing: 0.8px;
     }
     .status-on-duty  { background: var(--green);  color: #000; }
     .status-onsite   { background: var(--yellow); color: #000; }
     .status-off      { background: var(--red);    color: #fff; }
     .status-break    { background: var(--orange); color: #fff; }
 
+    /* Footer kept but empty for spacing – you can remove the <footer> tag entirely if you want zero bottom margin */
     footer {
       margin-top: auto;
       padding: 5rem 0 2rem;
       color: #64748b;
       font-size: 1.2rem;
-    }
-    @media (max-width: 1200px) {
-      .staff-icon { width: 160px; height: 160px; }
-      .staff-member { width: 180px; }
-      .staff-status { font-size: 1.2rem; }
-    }
-    @media (max-width: 768px) {
-      h1 { font-size: 3rem; }
-      .clock { font-size: 6.5rem; }
-      .status { font-size: 4.2rem; min-width: 90%; padding: 1.5rem 3rem; }
-      .staff-icon { width: 140px; height: 140px; }
-      .staff-member { width: 160px; }
-      .staff-container { gap: 2rem 1.8rem; }
-    }
-    @media (max-width: 480px) {
-      .clock { font-size: 5rem; }
-      .status { font-size: 3.5rem; padding: 1.2rem 2rem; }
-      .staff-icon { width: 120px; height: 120px; }
-      .staff-member { width: 140px; }
-      .staff-status { font-size: 1.1rem; padding: 0.6rem 1.1rem; }
+      visibility: hidden; /* or display: none; if you prefer no space at all */
     }
   </style>
 </head>
 <body>
 <div class="container">
-  <h1>Duty Status – Hong Kong</h1>
   <div class="clock" id="live-clock">00:00:00</div>
   <div class="status" id="status-display">Checking...</div>
 
@@ -166,10 +141,10 @@
   <div class="staff-container" id="staff-container"></div>
 </div>
 
-<footer>Hong Kong Time (HKT) • Live Update • Click big status when ON DUTY to toggle ONSITE • Click avatars to cycle: On duty → Onsite → Off → Break</footer>
+<footer></footer>
 
 <script>
-// JavaScript remains unchanged from previous version
+// JavaScript remains unchanged
 let manualMode = false;
 let manualStatus = '';
 
