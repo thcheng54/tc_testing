@@ -34,33 +34,33 @@
       text-align: center;
     }
     .container {
-      max-width: 1000px;
+      max-width: 1200px;
       width: 100%;
     }
     h1 {
-      font-size: 3.4rem;
+      font-size: 3.8rem;
       color: var(--accent);
-      margin-bottom: 1.5rem;
-      letter-spacing: 1px;
+      margin-bottom: 1.8rem;
+      letter-spacing: 1.2px;
     }
     .clock {
-      font-size: 7.5rem;
+      font-size: 8.5rem;
       font-weight: 700;
-      letter-spacing: 6px;
+      letter-spacing: 8px;
       color: var(--text);
-      margin: 1rem 0 2.5rem;
+      margin: 1.2rem 0 3rem;
       font-variant-numeric: tabular-nums;
-      text-shadow: 0 6px 25px rgba(0,0,0,0.7);
+      text-shadow: 0 8px 30px rgba(0,0,0,0.7);
     }
     .status {
-      font-size: 4.8rem;
+      font-size: 5.2rem;
       font-weight: 800;
-      padding: 1.5rem 3.5rem;
-      border-radius: 24px;
+      padding: 1.8rem 4rem;
+      border-radius: 28px;
       display: inline-block;
-      margin: 1.5rem 0;
-      min-width: 650px;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+      margin: 2rem 0;
+      min-width: 700px;
+      box-shadow: 0 14px 50px rgba(0,0,0,0.6);
       line-height: 1.2;
       user-select: none;
     }
@@ -71,57 +71,57 @@
     }
     .on-duty:hover, .onsite:hover {
       transform: scale(1.03);
-      box-shadow: 0 16px 50px rgba(0,0,0,0.7);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.7);
     }
     .on-duty  { background: var(--green); }
     .onsite   { background: var(--onsite); }
     .lunch    { background: var(--yellow); color: #000; }
     .off-duty { background: var(--red);    color: #fff; }
 
-    /* Staff icons section – BIGGER SIZE */
+    /* Staff section – EVEN BIGGER (50% more than last version) */
     .staff-container {
-      margin: 3rem 0;
+      margin: 4rem 0;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 2rem 1.8rem;
-      max-width: 1000px;
+      gap: 2.5rem 2.2rem;
+      max-width: 1200px;
     }
     .staff-member {
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 140px;
+      width: 200px;
     }
     .staff-icon {
-      width: 120px;
-      height: 120px;
+      width: 180px;
+      height: 180px;
       border-radius: 50%;
       object-fit: cover;
-      border: 5px solid transparent;
-      transition: all 0.3s ease;
+      border: 6px solid transparent;
+      transition: all 0.35s ease;
       cursor: pointer;
-      filter: grayscale(100%) opacity(0.55);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+      filter: grayscale(100%) opacity(0.6);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
     }
     .staff-icon.active {
       filter: grayscale(0%) opacity(1);
-      box-shadow: 0 12px 35px rgba(34,197,94,0.6);
-      transform: scale(1.12);
+      box-shadow: 0 16px 50px rgba(34,197,94,0.7);
+      transform: scale(1.1);
     }
     .staff-icon:hover {
-      transform: scale(1.18);
+      transform: scale(1.14);
     }
     .staff-status {
-      margin-top: 0.9rem;
-      font-size: 1.1rem;
+      margin-top: 1.2rem;
+      font-size: 1.3rem;
       font-weight: 700;
-      padding: 0.5rem 1rem;
-      border-radius: 14px;
-      background: rgba(0,0,0,0.45);
-      min-width: 100px;
+      padding: 0.7rem 1.3rem;
+      border-radius: 16px;
+      background: rgba(0,0,0,0.5);
+      min-width: 140px;
       text-align: center;
-      letter-spacing: 0.6px;
+      letter-spacing: 0.7px;
     }
     .status-on-duty  { background: var(--green);  color: #000; }
     .status-onsite   { background: var(--yellow); color: #000; }
@@ -130,29 +130,29 @@
 
     footer {
       margin-top: auto;
-      padding: 4rem 0 1.5rem;
+      padding: 5rem 0 2rem;
       color: #64748b;
-      font-size: 1.15rem;
+      font-size: 1.2rem;
     }
-    @media (max-width: 1024px) {
-      .staff-icon { width: 110px; height: 110px; }
-      .staff-member { width: 130px; }
-      .staff-status { font-size: 1rem; }
+    @media (max-width: 1200px) {
+      .staff-icon { width: 160px; height: 160px; }
+      .staff-member { width: 180px; }
+      .staff-status { font-size: 1.2rem; }
     }
     @media (max-width: 768px) {
-      h1 { font-size: 2.8rem; }
-      .clock { font-size: 6rem; }
-      .status { font-size: 4rem; min-width: 90%; padding: 1.3rem 2.5rem; }
-      .staff-icon { width: 100px; height: 100px; }
-      .staff-member { width: 120px; }
-      .staff-container { gap: 1.6rem 1.4rem; }
+      h1 { font-size: 3rem; }
+      .clock { font-size: 6.5rem; }
+      .status { font-size: 4.2rem; min-width: 90%; padding: 1.5rem 3rem; }
+      .staff-icon { width: 140px; height: 140px; }
+      .staff-member { width: 160px; }
+      .staff-container { gap: 2rem 1.8rem; }
     }
     @media (max-width: 480px) {
-      .clock { font-size: 4.5rem; }
-      .status { font-size: 3.2rem; padding: 1rem 1.8rem; }
-      .staff-icon { width: 90px; height: 90px; }
-      .staff-member { width: 110px; }
-      .staff-status { font-size: 0.95rem; padding: 0.45rem 0.9rem; }
+      .clock { font-size: 5rem; }
+      .status { font-size: 3.5rem; padding: 1.2rem 2rem; }
+      .staff-icon { width: 120px; height: 120px; }
+      .staff-member { width: 140px; }
+      .staff-status { font-size: 1.1rem; padding: 0.6rem 1.1rem; }
     }
   </style>
 </head>
@@ -169,8 +169,7 @@
 <footer>Hong Kong Time (HKT) • Live Update • Click big status when ON DUTY to toggle ONSITE • Click avatars to cycle: On duty → Onsite → Off → Break</footer>
 
 <script>
-// (The JavaScript remains exactly the same as previous version – no changes needed)
-// Live HK clock + main status logic
+// JavaScript remains unchanged from previous version
 let manualMode = false;
 let manualStatus = '';
 
@@ -237,9 +236,8 @@ function toggleMainOnsite() {
   updateMainDisplay();
 }
 
-// Staff logic
 const staffCount = 7;
-const staffStates = new Array(staffCount).fill(0); // 0: On duty, 1: Onsite, 2: Off, 3: Break
+const staffStates = new Array(staffCount).fill(0);
 
 const statusCycle = [
   { text: 'On duty',  class: 'status-on-duty',  active: true  },
