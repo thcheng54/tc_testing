@@ -34,17 +34,17 @@
       text-align: center;
     }
     .container {
-      max-width: 900px;
+      max-width: 1000px;
       width: 100%;
     }
     h1 {
-      font-size: 3.2rem;
+      font-size: 3.4rem;
       color: var(--accent);
       margin-bottom: 1.5rem;
       letter-spacing: 1px;
     }
     .clock {
-      font-size: 7rem;
+      font-size: 7.5rem;
       font-weight: 700;
       letter-spacing: 6px;
       color: var(--text);
@@ -53,13 +53,13 @@
       text-shadow: 0 6px 25px rgba(0,0,0,0.7);
     }
     .status {
-      font-size: 4.5rem;
+      font-size: 4.8rem;
       font-weight: 800;
-      padding: 1.4rem 3rem;
-      border-radius: 20px;
+      padding: 1.5rem 3.5rem;
+      border-radius: 24px;
       display: inline-block;
       margin: 1.5rem 0;
-      min-width: 600px;
+      min-width: 650px;
       box-shadow: 0 12px 40px rgba(0,0,0,0.6);
       line-height: 1.2;
       user-select: none;
@@ -78,80 +78,81 @@
     .lunch    { background: var(--yellow); color: #000; }
     .off-duty { background: var(--red);    color: #fff; }
 
-    /* Staff icons section */
+    /* Staff icons section – BIGGER SIZE */
     .staff-container {
-      margin: 2.5rem 0;
+      margin: 3rem 0;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 1.8rem 1.2rem;
-      max-width: 800px;
+      gap: 2rem 1.8rem;
+      max-width: 1000px;
     }
     .staff-member {
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 100px;
+      width: 140px;
     }
     .staff-icon {
-      width: 80px;
-      height: 80px;
+      width: 120px;
+      height: 120px;
       border-radius: 50%;
       object-fit: cover;
-      border: 4px solid transparent;
-      transition: all 0.25s ease;
+      border: 5px solid transparent;
+      transition: all 0.3s ease;
       cursor: pointer;
-      filter: grayscale(100%) opacity(0.5);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      filter: grayscale(100%) opacity(0.55);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
     }
     .staff-icon.active {
       filter: grayscale(0%) opacity(1);
-      box-shadow: 0 8px 25px rgba(34,197,94,0.5);
-      transform: scale(1.08);
+      box-shadow: 0 12px 35px rgba(34,197,94,0.6);
+      transform: scale(1.12);
     }
     .staff-icon:hover {
-      transform: scale(1.15);
+      transform: scale(1.18);
     }
     .staff-status {
-      margin-top: 0.6rem;
-      font-size: 0.9rem;
-      font-weight: 600;
-      padding: 0.35rem 0.8rem;
-      border-radius: 12px;
-      background: rgba(0,0,0,0.4);
-      min-width: 80px;
+      margin-top: 0.9rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      padding: 0.5rem 1rem;
+      border-radius: 14px;
+      background: rgba(0,0,0,0.45);
+      min-width: 100px;
       text-align: center;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.6px;
     }
     .status-on-duty  { background: var(--green);  color: #000; }
     .status-onsite   { background: var(--yellow); color: #000; }
     .status-off      { background: var(--red);    color: #fff; }
     .status-break    { background: var(--orange); color: #fff; }
 
-    .details {
-      font-size: 1.8rem;
-      color: var(--muted);
-      margin-top: 2.5rem;
-      line-height: 1.7;
-    }
     footer {
       margin-top: auto;
-      padding: 3rem 0 1.5rem;
+      padding: 4rem 0 1.5rem;
       color: #64748b;
-      font-size: 1.1rem;
+      font-size: 1.15rem;
+    }
+    @media (max-width: 1024px) {
+      .staff-icon { width: 110px; height: 110px; }
+      .staff-member { width: 130px; }
+      .staff-status { font-size: 1rem; }
     }
     @media (max-width: 768px) {
-      h1 { font-size: 2.6rem; }
-      .clock { font-size: 5.2rem; letter-spacing: 4px; }
-      .status { font-size: 3.4rem; min-width: 90%; padding: 1.2rem 2rem; }
-      .staff-icon { width: 70px; height: 70px; }
-      .staff-status { font-size: 0.85rem; padding: 0.3rem 0.7rem; }
+      h1 { font-size: 2.8rem; }
+      .clock { font-size: 6rem; }
+      .status { font-size: 4rem; min-width: 90%; padding: 1.3rem 2.5rem; }
+      .staff-icon { width: 100px; height: 100px; }
+      .staff-member { width: 120px; }
+      .staff-container { gap: 1.6rem 1.4rem; }
     }
     @media (max-width: 480px) {
-      .clock { font-size: 4rem; }
-      .status { font-size: 2.8rem; padding: 1rem 1.5rem; }
-      .staff-icon { width: 65px; height: 65px; }
-      .staff-member { width: 90px; }
+      .clock { font-size: 4.5rem; }
+      .status { font-size: 3.2rem; padding: 1rem 1.8rem; }
+      .staff-icon { width: 90px; height: 90px; }
+      .staff-member { width: 110px; }
+      .staff-status { font-size: 0.95rem; padding: 0.45rem 0.9rem; }
     }
   </style>
 </head>
@@ -168,7 +169,8 @@
 <footer>Hong Kong Time (HKT) • Live Update • Click big status when ON DUTY to toggle ONSITE • Click avatars to cycle: On duty → Onsite → Off → Break</footer>
 
 <script>
-// Live HK clock + main status logic (unchanged)
+// (The JavaScript remains exactly the same as previous version – no changes needed)
+// Live HK clock + main status logic
 let manualMode = false;
 let manualStatus = '';
 
@@ -265,7 +267,6 @@ function initStaffIcons() {
     statusText.textContent = statusCycle[staffStates[i]].text;
     statusText.classList.add(statusCycle[staffStates[i]].class);
 
-    // Initial active state
     if (statusCycle[staffStates[i]].active) {
       img.classList.add('active');
     }
