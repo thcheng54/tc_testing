@@ -13,14 +13,13 @@
       --yellow: #eab308;
       --red: #ef4444;
       --muted: #94a3b8;
+      --onsite: #06b6d4;   /* teal-ish for ONSITE */
     }
-
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
       font-family: system-ui, -apple-system, sans-serif;
       background: var(--bg);
@@ -33,19 +32,16 @@
       padding: 20px;
       text-align: center;
     }
-
     .container {
       max-width: 900px;
       width: 100%;
     }
-
     h1 {
       font-size: 3.2rem;
       color: var(--accent);
       margin-bottom: 1.5rem;
       letter-spacing: 1px;
     }
-
     .clock {
       font-size: 7rem;
       font-weight: 700;
@@ -55,7 +51,6 @@
       font-variant-numeric: tabular-nums;
       text-shadow: 0 6px 25px rgba(0,0,0,0.7);
     }
-
     .status {
       font-size: 4.5rem;
       font-weight: 800;
@@ -66,53 +61,59 @@
       min-width: 600px;
       box-shadow: 0 12px 40px rgba(0,0,0,0.6);
       line-height: 1.2;
+      cursor: default;
+      user-select: none;
     }
-
-    .on-duty    { background: var(--green);  color: #000; }
-    .lunch      { background: var(--yellow); color: #000; }
-    .off-duty   { background: var(--red);    color: #fff; }
-
+    .on-duty, .onsite {
+      color: #000;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .on-duty:hover, .onsite:hover {
+      transform: scale(1.03);
+      box-shadow: 0 16px 50px rgba(0,0,0,0.7);
+    }
+    .on-duty  { background: var(--green); }
+    .onsite   { background: var(--onsite); }
+    .lunch    { background: var(--yellow); color: #000; }
+    .off-duty { background: var(--red);    color: #fff; }
     .details {
       font-size: 1.8rem;
       color: var(--muted);
       margin-top: 2.5rem;
       line-height: 1.7;
     }
-
     footer {
       margin-top: auto;
       padding: 3rem 0 1.5rem;
       color: #64748b;
       font-size: 1.1rem;
     }
-
     @media (max-width: 768px) {
-      h1       { font-size: 2.6rem; }
-      .clock   { font-size: 5.2rem; letter-spacing: 4px; }
-      .status  { font-size: 3.4rem; min-width: 90%; padding: 1.2rem 2rem; }
+      h1 { font-size: 2.6rem; }
+      .clock { font-size: 5.2rem; letter-spacing: 4px; }
+      .status { font-size: 3.4rem; min-width: 90%; padding: 1.2rem 2rem; }
       .details { font-size: 1.5rem; }
     }
-
     @media (max-width: 480px) {
-      .clock   { font-size: 4rem; }
-      .status  { font-size: 2.8rem; padding: 1rem 1.5rem; }
+      .clock { font-size: 4rem; }
+      .status { font-size: 2.8rem; padding: 1rem 1.5rem; }
     }
   </style>
 </head>
 <body>
-
 <div class="container">
   <h1>Duty Status – Hong Kong</h1>
-
   <div class="clock" id="live-clock">00:00:00</div>
-
   <div class="status" id="status-display">Checking...</div>
 </div>
-
-<footer>Hong Kong Time (HKT) • Live Update</footer>
+<footer>Hong Kong Time (HKT) • Live Update • Click ON DUTY to toggle ONSITE</footer>
 
 <script>
-// Live HK clock + duty status logic
+// Live HK clock + duty status logic with toggle
+let manualMode = false;
+let manualStatus = '';
+
 function updateDisplay() {
   const now = new Date();
   const hkTime = now.toLocaleString('en-US', {
@@ -122,22 +123,22 @@ function updateDisplay() {
     minute: '2-digit',
     second: '2-digit'
   });
-
   const [hh, mm, ss] = hkTime.split(':').map(Number);
-  const hour = hh;  // 0–23
+  const hour = hh;
   const minute = mm;
 
-  // Clock display with leading zeros
+  // Clock display
   const timeStr = `${String(hour).padStart(2,'0')}:${String(minute).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
   document.getElementById('live-clock').textContent = timeStr;
 
-  // Status logic (using your exact times)
+  const statusEl = document.getElementById('status-display');
+  const timeInMinutes = hour * 60 + minute;
+
   let statusText = '';
   let statusClass = '';
 
-  const timeInMinutes = hour * 60 + minute;
-
-  if (timeInMinutes >= 9*60 + 0 && timeInMinutes <= 12*60 + 29) {
+  // Determine base status
+  if (timeInMinutes >= 9*60 && timeInMinutes <= 12*60 + 29) {
     statusText = 'ON DUTY';
     statusClass = 'on-duty';
   }
@@ -154,17 +155,42 @@ function updateDisplay() {
     statusClass = 'off-duty';
   }
 
-  const statusEl = document.getElementById('status-display');
+  // If in manual mode and it's still an ON-DUTY period → respect manual toggle
+  if (manualMode && (statusClass === 'on-duty')) {
+    statusText = manualStatus;
+    statusClass = manualStatus === 'ON DUTY' ? 'on-duty' : 'onsite';
+  }
+
+  // Apply
   statusEl.textContent = statusText;
   statusEl.className = 'status ' + statusClass;
+
+  // Only enable click if it's ON DUTY or ONSITE
+  if (statusClass === 'on-duty' || statusClass === 'onsite') {
+    statusEl.onclick = toggleOnsite;
+    statusEl.style.cursor = 'pointer';
+  } else {
+    statusEl.onclick = null;
+    statusEl.style.cursor = 'default';
+  }
+}
+
+function toggleOnsite() {
+  const statusEl = document.getElementById('status-display');
+  manualMode = true;
+
+  if (statusEl.textContent === 'ON DUTY') {
+    manualStatus = 'ONSITE';
+  } else {
+    manualStatus = 'ON DUTY';
+  }
+
+  // Immediate visual update
+  updateDisplay();
 }
 
 setInterval(updateDisplay, 1000);
-updateDisplay();  // run immediately
-
+updateDisplay(); // run immediately
 </script>
-
 </body>
 </html>
-
-
