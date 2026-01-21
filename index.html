@@ -40,61 +40,62 @@
     }
 
     h1 {
-      font-size: 3.5rem;
+      font-size: 3.2rem;
       color: var(--accent);
       margin-bottom: 1.5rem;
       letter-spacing: 1px;
     }
 
     .clock {
-      font-size: 6.5rem;
+      font-size: 7rem;
       font-weight: 700;
-      letter-spacing: 8px;
+      letter-spacing: 6px;
       color: var(--text);
-      margin: 1rem 0 2rem;
+      margin: 1rem 0 2.5rem;
       font-variant-numeric: tabular-nums;
-      text-shadow: 0 4px 20px rgba(0,0,0,0.6);
+      text-shadow: 0 6px 25px rgba(0,0,0,0.7);
     }
 
     .status {
-      font-size: 4.2rem;
+      font-size: 4.5rem;
       font-weight: 800;
-      padding: 1.2rem 2.5rem;
-      border-radius: 16px;
+      padding: 1.4rem 3rem;
+      border-radius: 20px;
       display: inline-block;
-      margin: 1rem 0;
-      min-width: 500px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      margin: 1.5rem 0;
+      min-width: 600px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+      line-height: 1.2;
     }
 
-    .on-duty    { background: var(--green); color: #000; }
+    .on-duty    { background: var(--green);  color: #000; }
     .lunch      { background: var(--yellow); color: #000; }
     .off-duty   { background: var(--red);    color: #fff; }
 
     .details {
-      font-size: 1.6rem;
+      font-size: 1.8rem;
       color: var(--muted);
-      margin-top: 2rem;
-      line-height: 1.6;
+      margin-top: 2.5rem;
+      line-height: 1.7;
     }
 
     footer {
       margin-top: auto;
-      padding: 2rem 0;
+      padding: 3rem 0 1.5rem;
       color: #64748b;
-      font-size: 1rem;
+      font-size: 1.1rem;
     }
 
     @media (max-width: 768px) {
-      h1       { font-size: 2.8rem; }
-      .clock   { font-size: 4.8rem; letter-spacing: 6px; }
-      .status  { font-size: 3rem; min-width: 90%; padding: 1rem 1.5rem; }
-      .details { font-size: 1.3rem; }
+      h1       { font-size: 2.6rem; }
+      .clock   { font-size: 5.2rem; letter-spacing: 4px; }
+      .status  { font-size: 3.4rem; min-width: 90%; padding: 1.2rem 2rem; }
+      .details { font-size: 1.5rem; }
     }
 
     @media (max-width: 480px) {
-      .clock   { font-size: 3.8rem; }
-      .status  { font-size: 2.4rem; }
+      .clock   { font-size: 4rem; }
+      .status  { font-size: 2.8rem; padding: 1rem 1.5rem; }
     }
   </style>
 </head>
@@ -108,20 +109,19 @@
   <div class="status" id="status-display">Checking...</div>
 
   <div class="details">
-    09:00 – 12:30  On Duty<br>
-    12:30 – 13:30  Lunch Time<br>
-    13:30 – 18:30  On Duty<br>
-    18:30 – 00:00  Off Duty
+    09:00 – 12:29   On Duty<br>
+    12:30 – 13:30   Lunch Time<br>
+    13:30 – 18:29   On Duty<br>
+    18:30 – 00:00   OFF DUTY, SEE YOU TMR!!!
   </div>
 </div>
 
 <footer>Hong Kong Time (HKT) • Live Update</footer>
 
 <script>
-// Live Hong Kong clock + duty status
+// Live HK clock + duty status logic
 function updateDisplay() {
   const now = new Date();
-  // Force Hong Kong time
   const hkTime = now.toLocaleString('en-US', {
     timeZone: 'Asia/Hong_Kong',
     hour12: false,
@@ -131,27 +131,28 @@ function updateDisplay() {
   });
 
   const [hh, mm, ss] = hkTime.split(':').map(Number);
-  const hour = hh;           // 0–23
+  const hour = hh;  // 0–23
   const minute = mm;
 
-  // Format clock as HH:MM:SS with leading zeros
+  // Clock display with leading zeros
   const timeStr = `${String(hour).padStart(2,'0')}:${String(minute).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
-
   document.getElementById('live-clock').textContent = timeStr;
 
-  // Determine status (24-hour logic)
+  // Status logic (using your exact times)
   let statusText = '';
   let statusClass = '';
 
-  if ((hour > 9 || (hour === 9 && minute >= 0)) && (hour < 12 || (hour === 12 && minute <= 30))) {
+  const timeInMinutes = hour * 60 + minute;
+
+  if (timeInMinutes >= 9*60 + 0 && timeInMinutes <= 12*60 + 29) {
     statusText = 'ON DUTY';
     statusClass = 'on-duty';
   }
-  else if ((hour === 12 && minute = 30) || (hour === 13 && minute < 30)) {
+  else if (timeInMinutes >= 12*60 + 30 && timeInMinutes <= 13*60 + 30) {
     statusText = 'LUNCH TIME';
     statusClass = 'lunch';
   }
-  else if ((hour > 13 || (hour === 13 && minute >= 30)) && (hour < 18 || (hour === 18 && minute < 30))) {
+  else if (timeInMinutes >= 13*60 + 30 && timeInMinutes <= 18*60 + 29) {
     statusText = 'ON DUTY';
     statusClass = 'on-duty';
   }
@@ -166,10 +167,9 @@ function updateDisplay() {
 }
 
 setInterval(updateDisplay, 1000);
-updateDisplay();  // initial call
+updateDisplay();  // run immediately
 
 </script>
 
 </body>
 </html>
-
