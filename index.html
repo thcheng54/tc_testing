@@ -14,7 +14,6 @@
       --orange: #f97316;
       --red: #ef4444;
       --muted: #94a3b8;
-      --onsite: #06b6d4;
     }
     * {
       margin: 0;
@@ -38,46 +37,22 @@
       width: 100%;
     }
     .clock {
-      font-size: 9rem;
+      font-size: 10rem;
       font-weight: 700;
-      letter-spacing: 8px;
+      letter-spacing: 10px;
       color: var(--text);
-      margin: 1rem 0 0.3rem;        /* ← super tight now */
+      margin: 1rem 0 4rem;
       font-variant-numeric: tabular-nums;
-      text-shadow: 0 8px 30px rgba(0,0,0,0.7);
+      text-shadow: 0 10px 40px rgba(0,0,0,0.7);
     }
-    .status {
-      font-size: 5.5rem;
-      font-weight: 800;
-      padding: 1.8rem 4.5rem;
-      border-radius: 30px;
-      display: inline-block;
-      margin: 0 0 3.5rem;           /* ← top margin = 0, moved all the way up */
-      min-width: 750px;
-      box-shadow: 0 14px 50px rgba(0,0,0,0.6);
-      line-height: 1.2;
-      user-select: none;
-    }
-    .on-duty, .onsite {
-      color: #000;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .on-duty:hover, .onsite:hover {
-      transform: scale(1.03);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.7);
-    }
-    .on-duty  { background: var(--green); }
-    .onsite   { background: var(--onsite); }
-    .lunch    { background: var(--yellow); color: #000; }
-    .off-duty { background: var(--red);    color: #fff; }
 
+    /* Staff section – kept large */
     .staff-container {
-      margin: 4rem 0;
+      margin: 3rem 0 6rem;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 2.8rem 2.4rem;
+      gap: 3rem 2.8rem;
       max-width: 1200px;
     }
     .staff-member {
@@ -107,12 +82,12 @@
     }
     .staff-status {
       margin-top: 1.3rem;
-      font-size: 1.35rem;
+      font-size: 1.4rem;
       font-weight: 700;
-      padding: 0.8rem 1.4rem;
-      border-radius: 18px;
+      padding: 0.9rem 1.5rem;
+      border-radius: 20px;
       background: rgba(0,0,0,0.5);
-      min-width: 150px;
+      min-width: 160px;
       text-align: center;
       letter-spacing: 0.8px;
     }
@@ -131,18 +106,18 @@
 <body>
 <div class="container">
   <div class="clock" id="live-clock">00:00:00</div>
-  <div class="status" id="status-display">Checking...</div>
 
+  <!-- Staff avatars + status -->
   <div class="staff-container" id="staff-container"></div>
 </div>
 
 <footer></footer>
 
 <script>
-let manualMode = false;
-let manualStatus = '';
+// Live HK clock + popup notices + staff logic
+let lastAlertTime = null; // to prevent repeated alerts
 
-function updateMainDisplay() {
+function updateClockAndCheckAlerts() {
   const now = new Date();
   const hkTime = now.toLocaleString('en-US', {
     timeZone: 'Asia/Hong_Kong',
@@ -158,53 +133,30 @@ function updateMainDisplay() {
   const timeStr = `${String(hour).padStart(2,'0')}:${String(minute).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
   document.getElementById('live-clock').textContent = timeStr;
 
-  const statusEl = document.getElementById('status-display');
-  const timeInMinutes = hour * 60 + minute;
+  const currentMinutes = hour * 60 + minute;
 
-  let statusText = '';
-  let statusClass = '';
+  // Check for special time windows → show alert only on entry
+  const currentKey = `${hour}:${minute}`;
 
-  if (timeInMinutes >= 9*60 && timeInMinutes <= 12*60 + 29) {
-    statusText = 'ON DUTY';
-    statusClass = 'on-duty';
+  if (currentMinutes >= 12*60 + 30 && currentMinutes <= 13*60 + 30) {
+    if (lastAlertTime !== 'lunch') {
+      alert("LUNCH TIME");
+      lastAlertTime = 'lunch';
+    }
   }
-  else if (timeInMinutes >= 12*60 + 30 && timeInMinutes <= 13*60 + 30) {
-    statusText = 'LUNCH TIME';
-    statusClass = 'lunch';
-  }
-  else if (timeInMinutes >= 13*60 + 30 && timeInMinutes <= 18*60 + 29) {
-    statusText = 'ON DUTY';
-    statusClass = 'on-duty';
+  else if (currentMinutes >= 18*60 + 29 && currentMinutes <= 19*60 + 0) {
+    if (lastAlertTime !== 'off') {
+      alert("OFF DUTY, SEE YOU TMR!!!");
+      lastAlertTime = 'off';
+    }
   }
   else {
-    statusText = 'OFF DUTY, SEE YOU TMR!!!';
-    statusClass = 'off-duty';
-  }
-
-  if (manualMode && statusClass === 'on-duty') {
-    statusText = manualStatus;
-    statusClass = manualStatus === 'ON DUTY' ? 'on-duty' : 'onsite';
-  }
-
-  statusEl.textContent = statusText;
-  statusEl.className = 'status ' + statusClass;
-
-  if (statusClass === 'on-duty' || statusClass === 'onsite') {
-    statusEl.onclick = toggleMainOnsite;
-    statusEl.style.cursor = 'pointer';
-  } else {
-    statusEl.onclick = null;
-    statusEl.style.cursor = 'default';
+    // Reset when leaving the special windows
+    lastAlertTime = null;
   }
 }
 
-function toggleMainOnsite() {
-  const statusEl = document.getElementById('status-display');
-  manualMode = true;
-  manualStatus = statusEl.textContent === 'ON DUTY' ? 'ONSITE' : 'ON DUTY';
-  updateMainDisplay();
-}
-
+// Staff logic (unchanged)
 const staffCount = 7;
 const staffStates = new Array(staffCount).fill(0);
 
@@ -256,8 +208,8 @@ function initStaffIcons() {
   }
 }
 
-setInterval(updateMainDisplay, 1000);
-updateMainDisplay();
+setInterval(updateClockAndCheckAlerts, 1000);
+updateClockAndCheckAlerts(); // initial run
 initStaffIcons();
 </script>
 </body>
