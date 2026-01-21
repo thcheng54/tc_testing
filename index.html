@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Duty Roster • Jan 2026 • Live HK Time & Weather</title>
+  <title>January 2026 Duty Roster • Live HK Time & Weather</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -13,15 +13,9 @@
       --warning: #fbbf24;
       --muted: #94a3b8;
     }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin:0; padding:0; box-sizing:border-box; }
     body {
-      font-family: system-ui, -apple-system, sans-serif;
+      font-family: system-ui, sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
@@ -30,74 +24,33 @@
       flex-direction: column;
       align-items: center;
     }
-
-    .container {
-      width: 100%;
-      max-width: 1000px;
-    }
-
+    .container { width: 100%; max-width: 1000px; }
     header {
       text-align: center;
-      background: rgba(30, 41, 59, 0.7);
+      background: rgba(30,41,59,0.7);
       backdrop-filter: blur(8px);
-      border: 1px solid rgba(148, 163, 184, 0.2);
+      border: 1px solid rgba(148,163,184,0.2);
       border-radius: 16px;
       padding: 24px 20px;
       margin-bottom: 28px;
     }
-
-    h1 {
-      font-size: 2.3rem;
-      margin-bottom: 12px;
-      color: var(--accent);
-    }
-
-    #live-time {
-      font-size: 2rem;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      color: var(--accent);
-      margin: 10px 0;
-    }
-
-    .weather-line {
-      font-size: 1.25rem;
-      color: var(--muted);
-    }
-
-    .weather-line strong {
-      color: var(--warning);
-      font-weight: 600;
-    }
-
+    h1 { font-size: 2.3rem; margin-bottom: 12px; color: var(--accent); }
+    #live-time { font-size: 2rem; font-weight: 600; color: var(--accent); margin: 10px 0; }
+    .weather-line { font-size: 1.25rem; color: var(--muted); }
+    .weather-line strong { color: var(--warning); font-weight: 600; }
     .roster-card {
-      background: rgba(30, 41, 59, 0.65);
+      background: rgba(30,41,59,0.65);
       backdrop-filter: blur(6px);
-      border: 1px solid rgba(148, 163, 184, 0.18);
+      border: 1px solid rgba(148,163,184,0.18);
       border-radius: 16px;
       padding: 12px;
-      overflow: hidden;
       box-shadow: 0 10px 32px rgba(0,0,0,0.45);
     }
-
-    .roster-card img {
-      width: 100%;
-      height: auto;
-      display: block;
-      border-radius: 10px;
-    }
-
-    footer {
-      margin-top: auto;
-      padding: 32px 0 16px;
-      color: #64748b;
-      font-size: 0.9rem;
-      text-align: center;
-    }
-
+    .roster-card img { width: 100%; height: auto; display: block; border-radius: 10px; }
+    footer { margin-top: auto; padding: 32px 0 16px; color: #64748b; font-size: 0.9rem; text-align: center; }
     @media (max-width: 640px) {
-      h1          { font-size: 1.9rem; }
-      #live-time  { font-size: 1.65rem; }
+      h1 { font-size: 1.9rem; }
+      #live-time { font-size: 1.65rem; }
       .weather-line { font-size: 1.1rem; }
     }
   </style>
@@ -105,85 +58,57 @@
 <body>
 
 <div class="container">
-
   <header>
     <h1>January 2026 Duty Roster</h1>
     <div id="live-time">Loading Hong Kong time...</div>
     <div class="weather-line">
-      Hong Kong now: 
-      <strong id="temp">--</strong> °C • 
-      <span id="condition">loading...</span>
+      Hong Kong now: <strong id="temp">--</strong> °C • <span id="condition">loading...</span>
     </div>
   </header>
 
   <div class="roster-card">
-    <img src="202601Roster.jpeg"
-         alt="Duty Roster – January 2026">
+    <img src="202601Roster.jpeg" alt="January 2026 Duty Roster">
   </div>
-
 </div>
 
-<footer>
-  Hong Kong Time (HKT) • Live • January 2026
-</footer>
+<footer>Hong Kong Time (HKT) • Live • January 2026</footer>
 
 <script>
-// ────────────────────────────────
-//   LIVE CLOCK – Hong Kong time
-// ────────────────────────────────
+// Live clock (Hong Kong)
 function updateClock() {
   const now = new Date().toLocaleString('en-US', {
     timeZone: 'Asia/Hong_Kong',
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
   });
   document.getElementById('live-time').textContent = now;
 }
-
 setInterval(updateClock, 1000);
 updateClock();
 
-// ────────────────────────────────
-//   WEATHER – Open-Meteo (no API key)
-// ────────────────────────────────
+// Weather (Open-Meteo)
 async function fetchWeather() {
   try {
-    const res = await fetch(
-      'https://api.open-meteo.com/v1/forecast?latitude=22.28&longitude=114.158&current=temperature_2m,weather_code&timezone=Asia%2FHong_Kong'
-    );
+    const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=22.28&longitude=114.158&current=temperature_2m,weather_code&timezone=Asia%2FHong_Kong');
     const data = await res.json();
-    
     const temp = Math.round(data.current.temperature_2m);
     const code = data.current.weather_code;
-
     let condition = 'Unknown';
     if (code === 0) condition = 'Clear sky';
     else if (code <= 3) condition = 'Partly cloudy';
-    else if (code <= 48) condition = 'Fog / overcast';
+    else if (code <= 48) condition = 'Fog/overcast';
     else if ([51,53,55,61,63,65,80,81,82].includes(code)) condition = 'Rain';
     else if ([71,73,75,77,85,86].includes(code)) condition = 'Snow';
     else if (code >= 95) condition = 'Thunderstorm';
-
     document.getElementById('temp').textContent = temp;
     document.getElementById('condition').textContent = condition;
   } catch (err) {
     document.getElementById('condition').textContent = '—';
   }
 }
-
 fetchWeather();
-setInterval(fetchWeather, 1000 * 60 * 10); // refresh every 10 min
-
+setInterval(fetchWeather, 600000); // 10 min
 </script>
 
 </body>
 </html>
-
-
-
