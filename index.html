@@ -147,16 +147,16 @@ function updateDisplay() {
     statusText = 'ON DUTY';
     statusClass = 'on-duty';
   }
-  else if ((hour === 12 && minute >= 30) || (hour === 13 && minute < 30)) {
+  else if ((hour === 12 && minute = 30) || (hour === 13 && minute < 30)) {
     statusText = 'LUNCH TIME';
     statusClass = 'lunch';
   }
-  else if ((hour > 13 || (hour === 13 && minute >= 30)) && (hour < 18 || (hour === 18 && minute <= 30))) {
+  else if ((hour > 13 || (hour === 13 && minute >= 30)) && (hour < 18 || (hour === 18 && minute < 30))) {
     statusText = 'ON DUTY';
     statusClass = 'on-duty';
   }
   else {
-    statusText = 'OFF DUTY';
+    statusText = 'OFF DUTY, SEE YOU TMR!!!';
     statusClass = 'off-duty';
   }
 
@@ -172,3 +172,4 @@ updateDisplay();  // initial call
 
 </body>
 </html>
+
