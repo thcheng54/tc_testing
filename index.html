@@ -41,12 +41,33 @@
       font-weight: 700;
       letter-spacing: 10px;
       color: var(--text);
-      margin: 1rem 0 4rem;
+      margin: 1rem 0 1.5rem;
       font-variant-numeric: tabular-nums;
       text-shadow: 0 10px 40px rgba(0,0,0,0.7);
     }
+    .notice {
+      font-size: 4.5rem;
+      font-weight: 800;
+      padding: 1.2rem 3rem;
+      border-radius: 24px;
+      margin: 0 0 3rem;
+      min-width: 700px;
+      box-shadow: 0 12px 45px rgba(0,0,0,0.6);
+      line-height: 1.2;
+      display: none; /* hidden by default */
+    }
+    .notice.lunch {
+      background: var(--yellow);
+      color: #000;
+      display: inline-block;
+    }
+    .notice.off {
+      background: var(--red);
+      color: #fff;
+      display: inline-block;
+    }
 
-    /* Staff section – kept large */
+    /* Staff section */
     .staff-container {
       margin: 3rem 0 6rem;
       display: flex;
@@ -106,6 +127,7 @@
 <body>
 <div class="container">
   <div class="clock" id="live-clock">00:00:00</div>
+  <div class="notice" id="notice"> </div>
 
   <!-- Staff avatars + status -->
   <div class="staff-container" id="staff-container"></div>
@@ -114,10 +136,8 @@
 <footer></footer>
 
 <script>
-// Live HK clock + popup notices + staff logic
-let lastAlertTime = null; // to prevent repeated alerts
-
-function updateClockAndCheckAlerts() {
+// Live HK clock + on-screen notice + staff logic
+function updateDisplay() {
   const now = new Date();
   const hkTime = now.toLocaleString('en-US', {
     timeZone: 'Asia/Hong_Kong',
@@ -134,25 +154,19 @@ function updateClockAndCheckAlerts() {
   document.getElementById('live-clock').textContent = timeStr;
 
   const currentMinutes = hour * 60 + minute;
-
-  // Check for special time windows → show alert only on entry
-  const currentKey = `${hour}:${minute}`;
+  const noticeEl = document.getElementById('notice');
 
   if (currentMinutes >= 12*60 + 30 && currentMinutes <= 13*60 + 30) {
-    if (lastAlertTime !== 'lunch') {
-      alert("LUNCH TIME");
-      lastAlertTime = 'lunch';
-    }
+    noticeEl.textContent = 'LUNCH TIME';
+    noticeEl.className = 'notice lunch';
   }
   else if (currentMinutes >= 18*60 + 29 && currentMinutes <= 19*60 + 0) {
-    if (lastAlertTime !== 'off') {
-      alert("OFF DUTY, SEE YOU TMR!!!");
-      lastAlertTime = 'off';
-    }
+    noticeEl.textContent = 'OFF DUTY, SEE YOU TMR!!!';
+    noticeEl.className = 'notice off';
   }
   else {
-    // Reset when leaving the special windows
-    lastAlertTime = null;
+    noticeEl.textContent = '';
+    noticeEl.className = 'notice'; // hide
   }
 }
 
@@ -208,8 +222,8 @@ function initStaffIcons() {
   }
 }
 
-setInterval(updateClockAndCheckAlerts, 1000);
-updateClockAndCheckAlerts(); // initial run
+setInterval(updateDisplay, 1000);
+updateDisplay(); // initial run
 initStaffIcons();
 </script>
 </body>
