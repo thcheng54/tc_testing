@@ -42,7 +42,7 @@
       font-weight: 700;
       letter-spacing: 8px;
       color: var(--text);
-      margin: 1rem 0 2rem;          /* ← reduced bottom margin */
+      margin: 1rem 0 0.3rem;        /* ← super tight now */
       font-variant-numeric: tabular-nums;
       text-shadow: 0 8px 30px rgba(0,0,0,0.7);
     }
@@ -52,7 +52,7 @@
       padding: 1.8rem 4.5rem;
       border-radius: 30px;
       display: inline-block;
-      margin: 1rem 0 3rem;          /* ← reduced top margin → moved up */
+      margin: 0 0 3.5rem;           /* ← top margin = 0, moved all the way up */
       min-width: 750px;
       box-shadow: 0 14px 50px rgba(0,0,0,0.6);
       line-height: 1.2;
@@ -72,7 +72,6 @@
     .lunch    { background: var(--yellow); color: #000; }
     .off-duty { background: var(--red);    color: #fff; }
 
-    /* Staff section */
     .staff-container {
       margin: 4rem 0;
       display: flex;
@@ -125,8 +124,6 @@
     footer {
       margin-top: auto;
       padding: 5rem 0 2rem;
-      color: #64748b;
-      font-size: 1.2rem;
       visibility: hidden;
     }
   </style>
@@ -136,14 +133,12 @@
   <div class="clock" id="live-clock">00:00:00</div>
   <div class="status" id="status-display">Checking...</div>
 
-  <!-- Staff avatars + status -->
   <div class="staff-container" id="staff-container"></div>
 </div>
 
 <footer></footer>
 
 <script>
-// JavaScript remains unchanged
 let manualMode = false;
 let manualStatus = '';
 
