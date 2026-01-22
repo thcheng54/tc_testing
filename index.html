@@ -162,7 +162,7 @@ function updateDisplay() {
     noticeEl.className = 'notice lunch';
   }
   else if (currentMinutes >= 18*60 + 29 && currentMinutes <= 19*60 + 0) {
-    noticeEl.textContent = 'OFF DUTY, SEE YOU TMR!!!';
+    noticeEl.textContent = 'B OFF DUTY, C add oil... hahah';
     noticeEl.className = 'notice off';
   }
   else {
@@ -183,6 +183,12 @@ function updateDisplay() {
     if (lastAutoReset !== todayKey + '-12:30') {
       resetAllStaff(3); // Break
       lastAutoReset = todayKey + '-12:30';
+    }
+  }
+  else if (currentMinutes >= 13*60 + 30 && currentMinutes < 13*60 + 31) {
+    if (lastAutoReset !== todayKey + '-13:30') {
+      resetAllStaff(0); // On duty
+      lastAutoReset = todayKey + '-13:30';
     }
   }
   else if (currentMinutes >= 18*60 + 30 && currentMinutes < 18*60 + 31) {
