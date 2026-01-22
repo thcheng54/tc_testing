@@ -108,6 +108,15 @@
     .status-off      { background: var(--red);    color: #fff; }
     .status-break    { background: var(--orange); color: #fff; }
 
+    .staff-name {
+      margin-top: 0.6rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--muted);
+      opacity: 0.9;
+      letter-spacing: 0.5px;
+    }
+
     footer {
       margin-top: auto;
       padding: 5rem 0 2rem;
@@ -127,7 +136,7 @@
 
 <script>
 // Live HK clock + notice + auto-reset staff status
-let lastAutoReset = ''; // track which reset we already did today
+let lastAutoReset = '';
 
 function updateDisplay() {
   const now = new Date();
@@ -148,7 +157,6 @@ function updateDisplay() {
   const currentMinutes = hour * 60 + minute;
   const noticeEl = document.getElementById('notice');
 
-  // Show notice during specific windows
   if (currentMinutes >= 12*60 + 30 && currentMinutes <= 13*60 + 30) {
     noticeEl.textContent = 'LUNCH TIME';
     noticeEl.className = 'notice lunch';
@@ -162,24 +170,24 @@ function updateDisplay() {
     noticeEl.className = 'notice';
   }
 
-  // Auto-reset staff statuses at key times (once per crossing)
+  // Auto-reset at key times (once per crossing)
   const todayKey = now.toLocaleDateString('en-US', { timeZone: 'Asia/Hong_Kong' });
 
-  if (currentMinutes >= 7*60 + 0 && currentMinutes < 7*60 + 1) {
+  if (currentMinutes >= 7*60 && currentMinutes < 7*60 + 1) {
     if (lastAutoReset !== todayKey + '-07:00') {
-      resetAllStaff(2); // 2 = Off
+      resetAllStaff(2); // Off
       lastAutoReset = todayKey + '-07:00';
     }
   }
   else if (currentMinutes >= 12*60 + 30 && currentMinutes < 12*60 + 31) {
     if (lastAutoReset !== todayKey + '-12:30') {
-      resetAllStaff(3); // 3 = Break
+      resetAllStaff(3); // Break
       lastAutoReset = todayKey + '-12:30';
     }
   }
   else if (currentMinutes >= 18*60 + 30 && currentMinutes < 18*60 + 31) {
     if (lastAutoReset !== todayKey + '-18:30') {
-      resetAllStaff(2); // 2 = Off
+      resetAllStaff(2); // Off
       lastAutoReset = todayKey + '-18:30';
     }
   }
@@ -198,9 +206,19 @@ function resetAllStaff(targetStateIndex) {
   });
 }
 
-// Staff logic
+// Staff logic with names
 const staffCount = 7;
-const staffStates = new Array(staffCount).fill(2); // start with Off (index 2)
+const staffStates = new Array(staffCount).fill(2); // start with Off
+
+const staffNames = [
+  "Carson CHEUNG",      // 001.png
+  "Tommy CHENG",    // 002.png ← your name
+  "Nick TSANG",
+  "Hans AU",
+  "Gorden LEE",
+  "Tony SO",
+  "Tommy WONG"
+];
 
 const statusCycle = [
   { text: 'On duty',  class: 'status-on-duty',  active: true  },
@@ -219,7 +237,7 @@ function initStaffIcons() {
 
     const img = document.createElement('img');
     img.src = `${String(i+1).padStart(3, '0')}.png`;
-    img.alt = `Staff ${i+1}`;
+    img.alt = staffNames[i];
     img.className = 'staff-icon';
     img.dataset.index = i;
 
@@ -229,12 +247,17 @@ function initStaffIcons() {
     statusText.textContent = initialState.text;
     statusText.classList.add(initialState.class);
 
+    const nameText = document.createElement('div');
+    nameText.className = 'staff-name';
+    nameText.textContent = staffNames[i];
+
     if (initialState.active) {
       img.classList.add('active');
     }
 
     member.appendChild(img);
     member.appendChild(statusText);
+    member.appendChild(nameText);
 
     member.onclick = () => {
       const idx = parseInt(img.dataset.index);
@@ -250,7 +273,7 @@ function initStaffIcons() {
 }
 
 setInterval(updateDisplay, 1000);
-updateDisplay(); // initial run
+updateDisplay();
 initStaffIcons();
 </script>
 </body>
