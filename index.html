@@ -54,20 +54,11 @@
       min-width: 700px;
       box-shadow: 0 12px 45px rgba(0,0,0,0.6);
       line-height: 1.2;
-      display: none; /* hidden by default */
+      display: none;
     }
-    .notice.lunch {
-      background: var(--yellow);
-      color: #000;
-      display: inline-block;
-    }
-    .notice.off {
-      background: var(--red);
-      color: #fff;
-      display: inline-block;
-    }
+    .notice.lunch { background: var(--yellow); color: #000; display: inline-block; }
+    .notice.off   { background: var(--red);    color: #fff; display: inline-block; }
 
-    /* Staff section */
     .staff-container {
       margin: 3rem 0 6rem;
       display: flex;
@@ -127,16 +118,17 @@
 <body>
 <div class="container">
   <div class="clock" id="live-clock">00:00:00</div>
-  <div class="notice" id="notice"> </div>
+  <div class="notice" id="notice"></div>
 
-  <!-- Staff avatars + status -->
   <div class="staff-container" id="staff-container"></div>
 </div>
 
 <footer></footer>
 
 <script>
-// Live HK clock + on-screen notice + staff logic
+// Live HK clock + notice + auto-reset staff status
+let lastAutoReset = ''; // track which reset we already did today
+
 function updateDisplay() {
   const now = new Date();
   const hkTime = now.toLocaleString('en-US', {
@@ -156,6 +148,7 @@ function updateDisplay() {
   const currentMinutes = hour * 60 + minute;
   const noticeEl = document.getElementById('notice');
 
+  // Show notice during specific windows
   if (currentMinutes >= 12*60 + 30 && currentMinutes <= 13*60 + 30) {
     noticeEl.textContent = 'LUNCH TIME';
     noticeEl.className = 'notice lunch';
@@ -166,13 +159,48 @@ function updateDisplay() {
   }
   else {
     noticeEl.textContent = '';
-    noticeEl.className = 'notice'; // hide
+    noticeEl.className = 'notice';
+  }
+
+  // Auto-reset staff statuses at key times (once per crossing)
+  const todayKey = now.toLocaleDateString('en-US', { timeZone: 'Asia/Hong_Kong' });
+
+  if (currentMinutes >= 7*60 + 0 && currentMinutes < 7*60 + 1) {
+    if (lastAutoReset !== todayKey + '-07:00') {
+      resetAllStaff(2); // 2 = Off
+      lastAutoReset = todayKey + '-07:00';
+    }
+  }
+  else if (currentMinutes >= 12*60 + 30 && currentMinutes < 12*60 + 31) {
+    if (lastAutoReset !== todayKey + '-12:30') {
+      resetAllStaff(3); // 3 = Break
+      lastAutoReset = todayKey + '-12:30';
+    }
+  }
+  else if (currentMinutes >= 18*60 + 30 && currentMinutes < 18*60 + 31) {
+    if (lastAutoReset !== todayKey + '-18:30') {
+      resetAllStaff(2); // 2 = Off
+      lastAutoReset = todayKey + '-18:30';
+    }
   }
 }
 
-// Staff logic (unchanged)
+function resetAllStaff(targetStateIndex) {
+  const members = document.querySelectorAll('.staff-member');
+  members.forEach((member, i) => {
+    staffStates[i] = targetStateIndex;
+    const state = statusCycle[targetStateIndex];
+    const statusText = member.querySelector('.staff-status');
+    statusText.textContent = state.text;
+    statusText.className = 'staff-status ' + state.class;
+    const img = member.querySelector('.staff-icon');
+    img.classList.toggle('active', state.active);
+  });
+}
+
+// Staff logic
 const staffCount = 7;
-const staffStates = new Array(staffCount).fill(0);
+const staffStates = new Array(staffCount).fill(2); // start with Off (index 2)
 
 const statusCycle = [
   { text: 'On duty',  class: 'status-on-duty',  active: true  },
@@ -197,10 +225,11 @@ function initStaffIcons() {
 
     const statusText = document.createElement('div');
     statusText.className = 'staff-status';
-    statusText.textContent = statusCycle[staffStates[i]].text;
-    statusText.classList.add(statusCycle[staffStates[i]].class);
+    const initialState = statusCycle[staffStates[i]];
+    statusText.textContent = initialState.text;
+    statusText.classList.add(initialState.class);
 
-    if (statusCycle[staffStates[i]].active) {
+    if (initialState.active) {
       img.classList.add('active');
     }
 
@@ -210,11 +239,9 @@ function initStaffIcons() {
     member.onclick = () => {
       const idx = parseInt(img.dataset.index);
       staffStates[idx] = (staffStates[idx] + 1) % 4;
-
       const state = statusCycle[staffStates[idx]];
       statusText.textContent = state.text;
       statusText.className = 'staff-status ' + state.class;
-
       img.classList.toggle('active', state.active);
     };
 
